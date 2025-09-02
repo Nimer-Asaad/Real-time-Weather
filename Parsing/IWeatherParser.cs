@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Weather.App.Models;
 
-namespace Real_time_Weather.Parsing
+
+namespace Weather.App.Parsing;
+
+
+public interface IWeatherParser
 {
-    internal class IWeatherParser
-    {
-    }
+    bool CanParse(string input);
+    bool TryParse(string input, out WeatherData? data);
 }

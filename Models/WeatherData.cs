@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Weather.App.Models;
 
-namespace Real_time_Weather.Models
-{
-    internal class WeatherData
-    {
-    }
-}
+
+public record WeatherData(string Location, double Temperature, double Humidity);

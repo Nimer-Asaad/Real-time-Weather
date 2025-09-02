@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Weather.App.Models;
 
-namespace Real_time_Weather.Bots
+
+namespace Weather.App.Bots;
+
+
+public interface IWeatherBot
 {
-    internal class IWeatherBot
-    {
-    }
+    string Name { get; }
+    bool IsEnabled { get; }
+    void OnWeather(WeatherData data);
 }

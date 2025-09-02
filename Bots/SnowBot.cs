@@ -1,12 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Weather.App.Models;
 
-namespace Real_time_Weather.Bots
+
+namespace Weather.App.Bots;
+
+
+public class SnowBot : IWeatherBot
 {
-    internal class SnowBot
+    private readonly double _threshold;
+    private readonly string _message;
+    public string Name => nameof(SnowBot);
+    public bool IsEnabled { get; }
+
+
+    public SnowBot(bool enabled, double temperatureThreshold, string message)
     {
+        IsEnabled = enabled;
+        _threshold = temperatureThreshold;
+        _message = message;
+    }
+
+
+    public void OnWeather(WeatherData data)
+    {
+        if (!IsEnabled) return;
+        if (data.Temperature < _threshold)
+        {
+            Console.WriteLine("SnowBot activated!");
+            Console.WriteLine($"SnowBot: \"{_message}\"");
+        }
     }
 }

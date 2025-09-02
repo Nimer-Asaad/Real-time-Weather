@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Weather.App.Bots;
+using Weather.App.Models;
 
-namespace Real_time_Weather.Core
+
+namespace Weather.App.Core;
+
+
+public class WeatherHub
 {
-    internal class WeatherHub
+    private readonly List<IWeatherBot> _subscribers = new();
+
+
+    public void Subscribe(IWeatherBot bot) => _subscribers.Add(bot);
+
+
+    public void Publish(WeatherData data)
     {
+        foreach (var bot in _subscribers)
+            bot.OnWeather(data);
     }
 }
