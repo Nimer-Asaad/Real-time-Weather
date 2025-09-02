@@ -1,43 +1,70 @@
-﻿using Weather.App.Models;
+﻿using System.Text;
+using Weather.App.Models;
 using Weather.App.Parsing;
 using Weather.App.Core;
 
-
-namespace Weather.App.Core;
-
-
-public static class ConsoleUi
+namespace Weather.App.Core
 {
-    public static void Run(ParserRegistry registry, WeatherHub hub)
+    public static class ConsoleUi
     {
-        Console.WriteLine("Enter weather data (JSON or XML). Type 'exit' to quit.\n");
+        public static void Run(ParserRegistry registry, WeatherHub hub)
+        {
+            PrintHeader();
 
+            while (true)
+            {
+                var input = ReadBlock();                    // يدعم أسطر متعددة
+                if (string.IsNullOrWhiteSpace(input))       // تجاهل الفراغ
+                    continue;
 
-        while (true)
+                if (IsExit(input))                          // خروج
+                    break;
+
+                var parser = registry.Find(input);          // Strategy: اختيار البارسر
+                if (parser is null)
+                {
+                    Console.WriteLine("Unrecognized format. Please provide JSON or XML.\n");
+                    continue;
+                }
+
+                if (!parser.TryParse(input, out var data) || data is null)
+                {
+                    Console.WriteLine("Failed to parse input.\n");
+                    continue;
+                }
+
+                hub.Publish(data);                          // Observer: نشر التحديث
+                Console.WriteLine();
+            }
+        }
+
+        private static string ReadBlock()
         {
             Console.Write("Enter weather data: ");
-            var input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input)) continue;
-            if (input.Trim().Equals("exit", StringComparison.OrdinalIgnoreCase)) break;
+            var sb = new StringBuilder();
 
-
-            var parser = registry.Find(input);
-            if (parser is null)
+            // نبدأ قراءة الأسطر حتى سطر فارغ أو 'exit'
+            while (true)
             {
-                Console.WriteLine("Unrecognized format. Please provide JSON or XML.\n");
-                continue;
+                var line = Console.ReadLine();
+                if (line is null) break;                         // EOF (إغلاق الإدخال)
+                if (IsExit(line)) return "exit";                 // خروج فوري
+                if (line.Length == 0) break;                     // سطر فارغ = نهاية الإدخال
+
+                sb.AppendLine(line);
             }
 
+            return sb.ToString();
+        }
 
-            if (!parser.TryParse(input, out var data) || data is null)
-            {
-                Console.WriteLine("Failed to parse input.\n");
-                continue;
-            }
+        private static bool IsExit(string s)
+            => s.Trim().Equals("exit", StringComparison.OrdinalIgnoreCase);
 
-
-            hub.Publish(data);
-            Console.WriteLine();
+        private static void PrintHeader()
+        {
+            Console.WriteLine("Enter weather data (JSON or XML).");
+            Console.WriteLine("Paste multi-line, then press ENTER on an empty line to submit.");
+            Console.WriteLine("Type 'exit' alone to quit.\n");
         }
     }
 }
