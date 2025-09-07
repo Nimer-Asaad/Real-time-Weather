@@ -1,0 +1,24 @@
+﻿
+XML
+<WeatherData>
+  <Location>Zarqa</Location>
+  <Temperature>28</Temperature>
+  <Humidity>75</Humidity>
+</WeatherData>
+
+
+المتوقع:
+
+RainBot activated!
+RainBot: "It looks like it's about to pour down!"
+
+
+ JSON:
+
+{ "Location": "Amman", "Temperature": 35, "Humidity": 40 }
+
+
+المتوقع:
+
+SunBot activated!
+SunBot: "Wow, it's a scorcher out there!"
